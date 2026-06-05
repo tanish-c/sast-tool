@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sast-tool"
+version = "1.0.0"
+description = "Static Application Security Testing tool for Python with AST analysis and SARIF output"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Tanish Chhabra", email = "imtanish09@gmail.com"}]
+
+dependencies = [
+    "rich>=13.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+sast = "sast.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

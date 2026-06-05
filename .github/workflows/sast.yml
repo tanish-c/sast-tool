@@ -1,0 +1,38 @@
+name: SAST Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sast-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install SAST tool
+        run: pip install -e .
+
+      - name: Run SAST scan (SARIF)
+        run: sast scan --path . --format sarif --output results.sarif --severity HIGH
+        continue-on-error: true
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
+      - name: Run SAST scan (Console - gate on HIGH+)
+        run: sast scan --path . --format console --severity HIGH
